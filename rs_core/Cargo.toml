@@ -6,3 +6,5 @@ edition = "2021"
 [dependencies]
 
 regex = "1.11.1"
+rust-stemmers = "1.2.0"
+stop-words = "0.8.1"
