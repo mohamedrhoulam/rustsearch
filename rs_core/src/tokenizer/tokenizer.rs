@@ -10,8 +10,8 @@ pub enum TokenType {
 
 #[derive(Debug, PartialEq)]
 pub struct Token {
-    token: String,
-    token_type: TokenType,
+    pub token: String,
+    pub token_type: TokenType,
 }
 
 pub fn classify_token(token: &str) -> TokenType {
