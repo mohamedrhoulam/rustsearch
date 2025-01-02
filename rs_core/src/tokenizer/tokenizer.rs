@@ -17,7 +17,10 @@ pub struct Token {
 pub fn classify_token(token: &str) -> TokenType {
     if Regex::new(r"^([a-zA-Z]+\.){2,}$").unwrap().is_match(token) {
         TokenType::Abbreviation
-    } else if Regex::new(r"^[a-zA-Z0-9]+('[a-zA-Z]+)$").unwrap().is_match(token) {
+    } else if Regex::new(r"^[a-zA-Z0-9]+('[a-zA-Z]+)$")
+        .unwrap()
+        .is_match(token)
+    {
         TokenType::Possessive
     } else if Regex::new(r"^[a-zA-Z0-9]+$").unwrap().is_match(token) {
         TokenType::Term
@@ -28,14 +31,19 @@ pub fn classify_token(token: &str) -> TokenType {
 
 pub fn transform_token(token: &str, token_type: &TokenType) -> String {
     match token_type {
-        TokenType::Abbreviation => token.replace('.', ""), 
-        TokenType::Possessive => token.split('\'').next().unwrap_or(token).to_string(), 
-        _ => token.to_string(),
+        TokenType::Abbreviation => token.replace('.', "").to_uppercase(),
+        TokenType::Possessive => token
+            .split('\'')
+            .next()
+            .unwrap_or(token)
+            .to_string()
+            .to_lowercase(),
+        _ => token.to_string().to_lowercase(),
     }
 }
 
 pub fn tokenizer(text: &str) -> Vec<Token> {
-    let re = match Regex::new(r"\w+('\w+)?|[a-zA-Z]+\.+") {
+    let re = match Regex::new(r"([a-zA-Z]+\.){2,}|[a-zA-Z0-9]+('[a-zA-Z]+)?") {
         Ok(re) => re,
         Err(err) => {
             eprintln!("Failed to create regex: {}", err);
@@ -53,7 +61,7 @@ pub fn tokenizer(text: &str) -> Vec<Token> {
                 token_type,
             }
         })
-        .filter(|token| token.token_type != TokenType::Invalid) 
+        .filter(|token| token.token_type != TokenType::Invalid)
         .collect()
 }
 
