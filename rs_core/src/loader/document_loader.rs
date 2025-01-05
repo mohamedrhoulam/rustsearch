@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 pub struct Document {
     pub document_id: String,
-    pub document_name: Option<String>,
+    pub document_name: String,
     pub document_content: String,
 }
 
@@ -33,7 +33,8 @@ impl DocumentLoader {
                     let document_name = path
                         .file_name()
                         .and_then(|name| name.to_str())
-                        .map(|name| name.to_string());
+                        .map(|name| name.to_string())
+                        .expect("Unable to get file name");
                     self.documents.push_back(Document {
                         document_id,
                         document_name,
