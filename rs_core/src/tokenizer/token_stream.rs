@@ -127,7 +127,8 @@ mod tests {
 
     #[test]
     fn test_vec_token_stream() {
-        let mut stream: VecTokenStream = VecTokenStream::new(vec!["hello".to_string(), "world".to_string()]);
+        let mut stream: VecTokenStream =
+            VecTokenStream::new(vec!["hello".to_string(), "world".to_string()]);
 
         assert_eq!(
             stream.next(),
@@ -146,7 +147,8 @@ mod tests {
 
     #[test]
     fn test_token_iterator() {
-        let stream: VecTokenStream = VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
+        let stream: VecTokenStream =
+            VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
         let mut iterator: TokenIterator<VecTokenStream> = TokenIterator::new(stream);
 
         assert_eq!(
@@ -166,8 +168,10 @@ mod tests {
 
     #[test]
     fn test_token_iterator_equality() {
-        let stream1: VecTokenStream = VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
-        let stream2: VecTokenStream = VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
+        let stream1: VecTokenStream =
+            VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
+        let stream2: VecTokenStream =
+            VecTokenStream::new(vec!["token1".to_string(), "token2".to_string()]);
 
         let iter1: TokenIterator<VecTokenStream> = TokenIterator::new(stream1);
         let iter2: TokenIterator<VecTokenStream> = TokenIterator::new(stream2);

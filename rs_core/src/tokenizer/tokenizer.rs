@@ -55,11 +55,9 @@ pub fn tokenizer(text: &str) -> Vec<Token> {
         .map(|mat| {
             let raw_token = mat.as_str();
             let token_type = classify_token(raw_token);
-            let processed_token = transform_token(raw_token, &token_type);
-            Token {
-                token: processed_token,
-                token_type,
-            }
+            let token = transform_token(raw_token, &token_type);
+
+            Token { token, token_type }
         })
         .filter(|token| token.token_type != TokenType::Invalid)
         .collect()
