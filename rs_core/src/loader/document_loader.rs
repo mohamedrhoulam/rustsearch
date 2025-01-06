@@ -3,6 +3,7 @@ use std::fs;
 use std::path::Path;
 use uuid::Uuid;
 
+//TODO: Add a metadata field
 #[derive(Debug)]
 pub struct Document {
     pub document_id: String,
