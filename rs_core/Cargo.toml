@@ -10,3 +10,4 @@ rust-stemmers = "1.2.0"
 stop-words = "0.8.1"
 uuid = { version = "1", features = ["v4"] }
 rand = "0.8"
+lopdf = "0.34.0"

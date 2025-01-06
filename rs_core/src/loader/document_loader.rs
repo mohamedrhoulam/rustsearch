@@ -1,9 +1,9 @@
+use lopdf::Document as LopdfDocument;
 use std::collections::VecDeque;
 use std::fs;
 use std::path::Path;
 use uuid::Uuid;
 
-//TODO: Add a metadata field
 #[derive(Debug)]
 pub struct Document {
     pub document_id: String,
@@ -24,41 +24,70 @@ impl DocumentLoader {
         }
     }
 
-    fn create(&mut self, path: &Path) {
-        let document_id = Uuid::new_v4().to_string();
-        let document_content = fs::read_to_string(&path).expect("Unable to read file");
-        let document_name = path
-            .file_name()
-            .and_then(|name| name.to_str())
-            .map(|name| name.to_string())
-            .expect("Unable to get file name");
-        self.documents.push_back(Document {
-            document_id,
-            document_name,
-            document_content,
-        });
-    }
-
-    // this is terrible
-    // note to self: does this pushes to the top of the stack or does it enqueues it ?!
-    // TODO: Sort documents by name in the queue
     pub fn load(&mut self) {
         if Path::new(&self.source).is_dir() {
             for entry in fs::read_dir(&self.source).expect("Unable to read directory") {
                 let entry = entry.expect("Unable to read entry");
                 let path = entry.path();
                 if path.is_file() {
-                    self.create(&path);
+                    self.file(&path);
                 }
             }
         } else if Path::new(&self.source).is_file() {
             let path = Path::new(&self.source).to_path_buf();
-            self.create(&path);
+            self.file(&path);
         }
     }
 
     pub fn next(&mut self) -> Option<Document> {
         self.documents.pop_front()
+    }
+
+    fn file(&mut self, path: &Path) {
+        if let Some(extension) = path.extension().and_then(|ext| ext.to_str()) {
+            match extension.to_lowercase().as_str() {
+                "txt" => self.from_txt(path),
+                "pdf" => self.from_pdf(path),
+                _ => eprintln!("Unsupported file type: {}", extension),
+            }
+        }
+    }
+
+    fn from_txt(&mut self, path: &Path) {
+        let content = fs::read_to_string(&path).expect("Unable to read file");
+        self.document(path, content);
+    }
+
+    fn from_pdf(&mut self, path: &Path) {
+        let content = match LopdfDocument::load(path) {
+            Ok(doc) => {
+                let mut extracted_content = String::new();
+                for page_id in doc.get_pages().values() {
+                    if let Ok(page_content) = doc.extract_text(&[page_id.0]) {
+                        extracted_content.push_str(&page_content);
+                        extracted_content.push('\n');
+                    }
+                }
+                extracted_content
+            }
+            Err(_) => String::from("[Failed to extract content from PDF]"),
+        };
+        self.document(path, content);
+    }
+
+    fn document(&mut self, path: &Path, content: String) {
+        let document_id = Uuid::new_v4().to_string();
+        let document_name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .map(|name| name.to_string())
+            .expect("Unable to get file name");
+
+        self.documents.push_back(Document {
+            document_id,
+            document_name,
+            document_content: content,
+        });
     }
 }
 
