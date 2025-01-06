@@ -1,7 +1,7 @@
 use crate::tokenizer::tokenizer::{Token, TokenType};
 use rust_stemmers::{Algorithm, Stemmer};
-use stop_words::get as stop_words;
 use std::collections::HashSet;
+use stop_words::get as stop_words;
 
 pub trait TokenFilter {
     fn filter(&self, input: String) -> Vec<Token>;
