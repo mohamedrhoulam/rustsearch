@@ -23,42 +23,36 @@ impl DocumentLoader {
         }
     }
 
+    fn create(&mut self, path: &Path) {
+        let document_id = Uuid::new_v4().to_string();
+        let document_content = fs::read_to_string(&path).expect("Unable to read file");
+        let document_name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .map(|name| name.to_string())
+            .expect("Unable to get file name");
+        self.documents.push_back(Document {
+            document_id,
+            document_name,
+            document_content,
+        });
+    }
+
     // this is terrible
-    // note to self: does this pushes to the top of the stack or the enqueues it ?!
+    // note to self: does this pushes to the top of the stack or does it enqueues it ?!
     // TODO: Sort documents by name in the queue
     pub fn load(&mut self) {
         if Path::new(&self.source).is_dir() {
             for entry in fs::read_dir(&self.source).expect("Unable to read directory") {
                 let entry = entry.expect("Unable to read entry");
                 let path = entry.path();
-                let document_id = Uuid::new_v4().to_string();
                 if path.is_file() {
-                    let document_content = fs::read_to_string(&path).expect("Unable to read file");
-                    let document_name = path
-                        .file_name()
-                        .and_then(|name| name.to_str())
-                        .map(|name| name.to_string())
-                        .expect("Unable to get file name");
-                    self.documents.push_back(Document {
-                        document_id,
-                        document_name,
-                        document_content,
-                    });
+                    self.create(&path);
                 }
             }
         } else if Path::new(&self.source).is_file() {
-            let document_id = Uuid::new_v4().to_string();
-            let document_content = fs::read_to_string(&self.source).expect("Unable to read file");
-            let document_name = Path::new(&self.source)
-                .file_name()
-                .and_then(|name| name.to_str())
-                .map(|name| name.to_string())
-                .expect("Unable to get file name");
-            self.documents.push_back(Document {
-                document_id,
-                document_name,
-                document_content,
-            });
+            let path = Path::new(&self.source).to_path_buf();
+            self.create(&path);
         }
     }
 
