@@ -130,7 +130,7 @@ mod tests {
 
         let doc1 = loader.next().unwrap();
         assert_eq!(doc1.document_name, "doc1.txt");
-        assert_eq!(doc1.document_content, "Content of document 2");
+        assert_eq!(doc1.document_content, "Content of document 1");
 
         let doc2 = loader.next().unwrap();
         assert_eq!(doc2.document_name, "doc2.txt");
