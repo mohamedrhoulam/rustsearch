@@ -41,11 +41,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-build-
 
-    - name: Set project directory
-      run: ls
+
 
     - name: Build
-      run: cargo build --verbose
+      run: cd rs_core && cargo build --release
 
     - name: Run tests
-      run: cargo test
+      run: cd rs_core && cargo test
