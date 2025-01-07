@@ -129,11 +129,11 @@ mod tests {
         assert_eq!(loader.documents.len(), 2);
 
         let doc1 = loader.next().unwrap();
-        assert_eq!(doc1.document_name, "doc2.txt");
+        assert_eq!(doc1.document_name, "doc1.txt");
         assert_eq!(doc1.document_content, "Content of document 2");
 
         let doc2 = loader.next().unwrap();
-        assert_eq!(doc2.document_name, "doc1.txt");
+        assert_eq!(doc2.document_name, "doc2.txt");
         assert_eq!(doc2.document_content, "Content of document 1");
 
         fs::remove_dir_all(test_dir).expect("Unable to remove test directory");
