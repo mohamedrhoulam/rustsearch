@@ -42,7 +42,7 @@ jobs:
           ${{ runner.os }}-cargo-build-
 
     - name: Set project directory
-      run: cd rs_core
+      run: ls
 
     - name: Build
       run: cargo build --verbose
