@@ -1,4 +1,4 @@
-pub mod loader;
+pub mod document;
 pub mod tokenizer;
 
 fn main() {
